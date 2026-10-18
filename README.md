@@ -77,3 +77,6 @@ All methods rank candidate pairs (pairs sharing a neighbour, not yet connected) 
 * The cache is application-level and OS-*inspired*; it does not change the operating system.
 * Synthetic data only tests the pipeline. Its numbers prove nothing about real networks.
 * SQLite/MySQL timings depend on your machine; small datasets show small differences. Report hardware.
+
+## Manvi's Contribution
+Producer-consumer shared queue, worker threads, cache, and index benchmarking.
