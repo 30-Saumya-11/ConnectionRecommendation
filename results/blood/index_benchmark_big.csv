@@ -1,0 +1,3 @@
+query,rows,queries,without_index_s,with_index_s,speedup_x
+list matching donors (thousands of rows returned),200000,300,3.9522184310000057,1.0724377459999914,3.6852660639194226
+count donors per group+city (dashboard query),200000,300,3.201270260000001,0.05483449199999768,58.380594827068634

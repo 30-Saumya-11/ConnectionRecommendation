@@ -1,0 +1,5 @@
+test,rejected,reason
+blood group 'Z+' (CHECK),True,IntegrityError
+0 units requested (CHECK),True,IntegrityError
+unknown hospital (FOREIGN KEY),True,IntegrityError
+priority 7 (CHECK),True,IntegrityError

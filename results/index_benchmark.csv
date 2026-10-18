@@ -1,0 +1,3 @@
+query,with_index_s,without_index_s
+all 24 snapshots (by snapshot_id),0.011926454199999626,0.033185810600002696
+edges of 300 random users (by source/target),0.015025207999997292,0.45525475200000187

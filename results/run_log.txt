@@ -1,0 +1,29 @@
+== Step 4-5: dataset -> snapshots
+   users=1000  snapshots=24 (history 18 + future 6)
+   edges per snapshot: [600, 912, 1071, 1120, 1144, 1199, 1205, 1188, 1202, 1192, 1170, 1203, 1203, 1194, 1198, 1190, 1182, 1202, 1173, 1204, 1202, 1203, 1202, 1212]
+== Phase 11: load into sqlite (schema + indexes)
+   rows in edges table: 27571
+   true NEW links per test snapshot 19..24: [551, 556, 550, 564, 548, 549]
+== Phase 3-4: static baselines on snapshots 19..24
+   Common Neighbors         AUC=0.683 AP=0.284 Hits@50=0.044 P@K=0.011 t=0.90s
+   Jaccard                  AUC=0.689 AP=0.313 Hits@50=0.079 P@K=0.007 t=1.17s
+   Adamic-Adar              AUC=0.689 AP=0.312 Hits@50=0.082 P@K=0.008 t=0.94s
+   Preferential Attachment  AUC=0.655 AP=0.235 Hits@50=0.028 P@K=0.002 t=1.25s
+== Phase 5/8: tune on snapshots 13..18 by 'avg_precision' (no peeking at the future)
+   dynamic baseline window = 4   |   recency model: lambda = 1.0, window = 12
+   NOTE: best value sits at the EDGE of the search grid -> widen the grids in config.py and re-run
+== Phase 12: final experiments on the unseen future
+   (ML models: trained only on earlier snapshots)
+   A: Static (Adamic-Adar)                              AUC=0.689 AP=0.312 Hits@50=0.082 predict=1.02s data=0.061s hit=0.00
+   B: Dynamic baseline (window=4)                       AUC=0.640 AP=0.360 Hits@50=0.291 predict=0.09s data=0.013s hit=0.00
+   C: Recency-aware (lambda=1.0, window=12)             AUC=0.735 AP=0.507 Hits@50=0.373 predict=0.48s data=0.043s hit=0.00
+   D: Recency + LRU cache (size=12)                     AUC=0.735 AP=0.507 Hits@50=0.373 predict=0.46s data=0.011s hit=0.76
+   E: Logistic Regression, static features              AUC=0.691 AP=0.314 Hits@50=0.081 predict=16.56s data=0.242s hit=0.00
+   F: Logistic Regression, recency features             AUC=0.733 AP=0.503 Hits@50=0.348 predict=10.37s data=0.254s hit=0.00
+   G: Random Forest, recency features                   AUC=0.733 AP=0.513 Hits@50=0.371 predict=22.03s data=0.236s hit=0.00
+== Phase 10: cache size/policy sweep
+== Phase 11: index benchmark
+   all 24 snapshots (by snapshot_id): with index 11.9 ms | without 33.2 ms
+   edges of 300 random users (by source/target): with index 15.0 ms | without 455.3 ms
+
+Done in 108s.  Open  results/summary.md  and the PNG plots in results/

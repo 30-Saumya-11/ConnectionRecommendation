@@ -1,0 +1,30 @@
+== building the synthetic world and the database
+   people=1500  history snapshots=12  pending requests=100
+== ML: donor ranking (tuned on months 10-12, tested on month 13)
+   {'model': 'Random (no ML)', 'requests': 100, 'hit@5': 0.22, 'hit_std_err': 0.041, 'precision@5': 0.062, 'recall@5': 0.098, 'MRR': 0.121}
+   {'model': 'Static Adamic-Adar (all history)', 'requests': 100, 'hit@5': 0.36, 'hit_std_err': 0.048, 'precision@5': 0.108, 'recall@5': 0.166, 'MRR': 0.247}
+   {'model': 'Recency-aware (lambda=0.5, window=9)', 'requests': 100, 'hit@5': 0.74, 'hit_std_err': 0.044, 'precision@5': 0.206, 'recall@5': 0.313, 'MRR': 0.48}
+   best lambda=0.5, window=9  (if at the edge of the grid -> widen it)
+   snapshot-cache hit rate during evaluation: 1.00
+== OS: scheduling policies (simulation)
+   FCFS            aging=-      emergency=  52.5  routine=  57.0  routine-max= 284.1
+   PRIORITY        aging=-      emergency=   4.8  routine=  87.7  routine-max= 426.2
+   PRIORITY+AGING  aging=0.005  emergency=   4.8  routine=  83.8  routine-max= 367.9
+   PRIORITY+AGING  aging=0.01   emergency=   9.0  routine=  77.8  routine-max= 321.5
+   PRIORITY+AGING  aging=0.02   emergency=  18.6  routine=  70.5  routine-max= 299.7
+   PRIORITY+AGING  aging=0.05   emergency=  33.2  routine=  63.4  routine-max= 278.6
+== OS + DBMS: 4 worker threads, priority queue, atomic allocation
+   {'priority': 'EMERGENCY', 'requests': 6, 'avg_start_position': 3.7, 'fulfilled': 4, 'partial': 0, 'unfulfilled': 2}
+   {'priority': 'URGENT', 'requests': 28, 'avg_start_position': 21.7, 'fulfilled': 27, 'partial': 0, 'unfulfilled': 1}
+   {'priority': 'ROUTINE', 'requests': 66, 'avg_start_position': 67.0, 'fulfilled': 17, 'partial': 2, 'unfulfilled': 47}
+   100 requests in 0.37s | cache hit rate 0.98 | invariants {'units_allocated_twice': 0, 'request_count_mismatch': 0, 'over_allocated_requests': 0, 'allocated_units_without_row': 0} | donor notifications 497
+== DBMS: atomicity, constraints, index
+   {'error_raised': 'injected failure (to demonstrate ROLLBACK)', 'stock_unchanged_after_failure': True, 'retry_status': 'FULFILLED'}
+   {'test': "blood group 'Z+' (CHECK)", 'rejected': True, 'reason': 'IntegrityError'}
+   {'test': '0 units requested (CHECK)', 'rejected': True, 'reason': 'IntegrityError'}
+   {'test': 'unknown hospital (FOREIGN KEY)', 'rejected': True, 'reason': 'IntegrityError'}
+   {'test': 'priority 7 (CHECK)', 'rejected': True, 'reason': 'IntegrityError'}
+   {'query': 'list matching donors (thousands of rows returned)', 'rows': 200000, 'queries': 300, 'without_index_s': 3.9522, 'with_index_s': 1.0724, 'speedup_x': 3.6853}
+   {'query': 'count donors per group+city (dashboard query)', 'rows': 200000, 'queries': 300, 'without_index_s': 3.2013, 'with_index_s': 0.0548, 'speedup_x': 58.3806}
+
+Done in 45s -> results/blood/blood_summary.md

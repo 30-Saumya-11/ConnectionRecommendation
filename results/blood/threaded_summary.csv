@@ -1,0 +1,4 @@
+priority,requests,avg_start_position,fulfilled,partial,unfulfilled
+EMERGENCY,6,3.6666666666666665,4,0,2
+URGENT,28,21.678571428571427,27,0,1
+ROUTINE,66,66.98484848484848,17,2,47
